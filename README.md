@@ -1,7 +1,7 @@
 # Description
 PoC Langraph AI Agent integrated with a MQTT Events reasoning about the status of a machine using determenistic and semantic rules.
 
-## Execution
+## Execution
 - Start simulate_sensor.py to generate mqtt temperature events,
 
 python simulate_sensor.py
