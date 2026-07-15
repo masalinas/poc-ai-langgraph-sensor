@@ -259,17 +259,22 @@ def build_graph(mqtt_client: mqtt.Client):
 # MQTT wiring: every inbound message = one invocation of the graph
 # ---------------------------------------------------------------------------
 def main() -> None:
+    # initialize SQLite events database (Long time Memory Agent AI)
     memory_store.init_db()
 
+    # configure MQTT client
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+
+    # build agent AI
     app = build_graph(client)
 
-    # Save the plot directly as a local file without using IPython.
+    # Save the agent AI plot directly as a local file
     with open("images/graph.png", "wb") as f:
         f.write(app.get_graph(xray=True).draw_mermaid_png())
 
     print("Graph successfully saved as 'graph.png'")
 
+    # configure MQTT client handlers
     def on_connect(c, userdata, flags, reason_code, properties):
         print(f"Connected to {BROKER_HOST} (rc={reason_code})")
         c.subscribe(SENSE_TOPIC)
@@ -329,6 +334,7 @@ def main() -> None:
     client.on_connect = on_connect
     client.on_message = on_message
 
+    # connect MQTT Client to Broker and start forever loop
     client.connect(BROKER_HOST, BROKER_PORT, keepalive=60)
     client.loop_forever()  # blocks; each message triggers sense->reason->[human_review]->actuate->reflect
 
