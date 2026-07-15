@@ -104,6 +104,54 @@ The engine evaluates rules in a strict top-down order (prioritizing safety):
 
     **Logic**: If none of the above are met (the temperature is below 85°C, there are no rapid rising trends, and the system has already stabilized after cooling down), the state is safely declared as ok and the LLM does not intervene.
 
+A sample anget logs are. In these event We can see many not ambiguous decissions and only one ambiguous to be confirmed by a human
+
+```shell
+[SENSE]   veradoc/demo/machine07/temperature -> {'sensor': 'veradoc/demo/machine07/temperature', 'value_c': 68.5, 'timestamp': '2026-07-15T13:21:50.360142'}
+[REASON]  rules -> decision='ok' ambiguous=False  (68.5C is within normal range, trend is falling.)
+[ACTUATE] published 'OK: 68.5C' -> veradoc/demo/machine07/status
+[REFLECT] persisted as memory row #198 (engine=rules)
+
+[SENSE]   veradoc/demo/machine07/temperature -> {'sensor': 'veradoc/demo/machine07/temperature', 'value_c': 61.1, 'timestamp': '2026-07-15T13:21:55.360649'}
+[REASON]  rules -> decision='ok' ambiguous=False  (61.1C is within normal range, trend is falling.)
+[ACTUATE] published 'OK: 61.1C' -> veradoc/demo/machine07/status
+[REFLECT] persisted as memory row #199 (engine=rules)
+
+[SENSE]   veradoc/demo/machine07/temperature -> {'sensor': 'veradoc/demo/machine07/temperature', 'value_c': 69.9, 'timestamp': '2026-07-15T13:22:00.361096'}
+[REASON]  rules -> decision='ok' ambiguous=False  (69.9C is within normal range, trend is falling.)
+[ACTUATE] published 'OK: 69.9C' -> veradoc/demo/machine07/status
+[REFLECT] persisted as memory row #200 (engine=rules)
+
+[SENSE]   veradoc/demo/machine07/temperature -> {'sensor': 'veradoc/demo/machine07/temperature', 'value_c': 82.2, 'timestamp': '2026-07-15T13:22:05.361557'}
+[REASON]  rules -> decision='warn' ambiguous=True  (82.2C is below 85.0C but rising at +4.6C/cycle, projected to reach 86.8C next cycle.)
+[REASON]  llm -> decision='warn'  because: Projected temperature exceeds warning threshold despite current reading being below 85C.
+[REVIEW]  paused for human approval -> 'warn' (llm), waiting on veradoc/demo/machine07/approval_response
+[REVIEW]  awaiting approval for thread 00482696-0cae-4f43-aedf-1b5ec13ff84a -> published to veradoc/demo/machine07/approval_request
+
+[SENSE]   veradoc/demo/machine07/temperature -> {'sensor': 'veradoc/demo/machine07/temperature', 'value_c': 94.4, 'timestamp': '2026-07-15T13:22:10.361999'}
+[REASON]  rules -> decision='alert' ambiguous=False  (94.4C is at/above the 90.0C alert threshold.)
+[ACTUATE] published 'ALERT: 94.4C, shutdown recommended' -> veradoc/demo/machine07/alert
+[REFLECT] persisted as memory row #201 (engine=rules)
+```
+
+## Manage human in the loop
+
+You must send for each ambiguous message a event like this to acept or not:
+
+```shell
+$ mosquitto_pub -h broker.hivemq.com -t veradoc/demo/machine07/approval_response \
+    -m '{"thread_id": "354e3321-8fee-445c-97eb-b4ef300c0b75", "approved": true, "operator": "miguel"}'
+
+[SENSE]   veradoc/demo/machine07/temperature -> {'sensor': 'veradoc/demo/machine07/temperature', 'value_c': 88.1, 'timestamp': '2026-07-15T13:24:45.379469'}
+[REASON]  rules -> decision='warn' ambiguous=False  (88.1C is at/above the 85.0C warn threshold.)
+[ACTUATE] published 'WARN: 88.1C, notify on-call' -> veradoc/demo/machine07/warn
+[REFLECT] persisted as memory row #231 (engine=rules)
+[REVIEW]  paused for human approval -> 'warn' (llm), waiting on veradoc/demo/machine07/approval_response
+[REVIEW]  approved by miguel
+[ACTUATE] published 'WARN: 82.9C, notify on-call' -> veradoc/demo/machine07/warn
+[REFLECT] persisted as memory row #232 (engine=llm)
+
+```
 
 ## Links
 
