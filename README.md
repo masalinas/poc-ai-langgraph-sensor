@@ -104,7 +104,9 @@ The engine evaluates rules in a strict top-down order (prioritizing safety):
 
     **Logic**: If none of the above are met (the temperature is below 85°C, there are no rapid rising trends, and the system has already stabilized after cooling down), the state is safely declared as ok and the LLM does not intervene.
 
-A sample anget logs are. In these event We can see many not ambiguous decissions and only one ambiguous to be confirmed by a human
+## Execution logs
+
+Some sample agent logs are these ones. In these events we can observe that many are not ambiguous decissions and only one is ambiguous to be confirmed by a human later, but the thread continues, the events to be confirmes are save in SQLLite so they can be query or listed in a UI to be select and confirmed:
 
 ```shell
 [SENSE]   veradoc/demo/machine07/temperature -> {'sensor': 'veradoc/demo/machine07/temperature', 'value_c': 68.5, 'timestamp': '2026-07-15T13:21:50.360142'}
@@ -134,9 +136,9 @@ A sample anget logs are. In these event We can see many not ambiguous decissions
 [REFLECT] persisted as memory row #201 (engine=rules)
 ```
 
-## Manage human in the loop
+## Manage human in the loop events
 
-You must send for each ambiguous message a event like this to acept or not:
+All ambiguous events are persisted in a SQLite database. You must send for each one a MQTT event like this to be accept or not, then the final machine status for this particular event will be updated in consecuence:
 
 ```shell
 $ mosquitto_pub -h broker.hivemq.com -t veradoc/demo/machine07/approval_response \
