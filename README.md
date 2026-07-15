@@ -7,10 +7,14 @@ These are the depedencies for this agent:
 
 - We will use **langgraph** dependencies to implement the Agent AI and **SQLite** as persistence database for memory.
     ```shell
-    $ pip install langgraph langgraph-checkpoint-sqlite langchain-ollama paho-mqtt --break-system-packages
+    $ pip install langgraph langgraph-checkpoint-sqlite langchain-ollama --break-system-packages
     ```
 
 - We need a MQTT Client like **Paho** to send and receive mqtt events from a simulate temperature sensor and a MQTT broker, in this case we will use the free broker offered by hiveMQ.
+    ```shell
+    $ pip install paho-mqtt --break-system-packages
+    ```
+
 - Finally we need a reasoning LLM model like **qwen2.5:7b** to classify our machine status for ambiguous cases. we will use **Ollama** as models management.
     ```shell
     $ ollama pull qwen2.5:7b
