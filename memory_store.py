@@ -37,20 +37,27 @@ def init_db() -> None:
                 reading    TEXT NOT NULL,   -- JSON blob of the sensed payload
                 decision   TEXT NOT NULL,
                 reasoning  TEXT NOT NULL,
+                engine     TEXT NOT NULL DEFAULT 'rules',  -- 'rules' | 'llm' | 'rules_fallback'
                 created_at TEXT NOT NULL
             )
             """
         )
+        # Backfill for DBs created before `engine` existed.
+        cols = [row[1] for row in conn.execute("PRAGMA table_info(memory)").fetchall()]
+        if "engine" not in cols:
+            conn.execute("ALTER TABLE memory ADD COLUMN engine TEXT NOT NULL DEFAULT 'rules'")
 
 
-def record(topic: str, reading: dict, decision: str, reasoning: str) -> int:
-    """Called by the Reflect node after every cycle. Returns the new row id,
-    used as the monotonic cycle counter."""
+def record(topic: str, reading: dict, decision: str, reasoning: str, engine: str = "rules") -> int:
+    """Called by the Reflect node after every cycle. `engine` records whether
+    the rule layer decided outright ('rules'), the LLM was consulted for an
+    ambiguous case ('llm'), or the LLM failed and we fell back ('rules_fallback').
+    Returns the new row id."""
     with _connect() as conn:
         cur = conn.execute(
-            "INSERT INTO memory (topic, reading, decision, reasoning, created_at) "
-            "VALUES (?, ?, ?, ?, ?)",
-            (topic, json.dumps(reading), decision, reasoning, datetime.utcnow().isoformat()),
+            "INSERT INTO memory (topic, reading, decision, reasoning, engine, created_at) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            (topic, json.dumps(reading), decision, reasoning, engine, datetime.utcnow().isoformat()),
         )
         return cur.lastrowid
 
@@ -60,11 +67,11 @@ def recent(topic: str, limit: int = 3) -> list[dict]:
     specific sensor/topic, most recent last."""
     with _connect() as conn:
         rows = conn.execute(
-            "SELECT id, reading, decision, reasoning, created_at FROM memory "
+            "SELECT id, reading, decision, reasoning, engine, created_at FROM memory "
             "WHERE topic = ? ORDER BY id DESC LIMIT ?",
             (topic, limit),
         ).fetchall()
-
+ 
     rows.reverse()  # oldest -> newest, easier for the LLM to read as a timeline
     return [
         {
@@ -72,7 +79,8 @@ def recent(topic: str, limit: int = 3) -> list[dict]:
             "reading": json.loads(r[1]),
             "decision": r[2],
             "reasoning": r[3],
-            "created_at": r[4],
+            "engine": r[4],
+            "created_at": r[5],
         }
         for r in rows
     ]
