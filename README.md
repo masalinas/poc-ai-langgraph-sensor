@@ -6,7 +6,7 @@ PoC Langgraph AI Agent that classifie a machine status using measures from a tem
 These are the depedencies for this agent:
 
 - We will use **langgraph** dependencies to implement the Agent AI and **SQLite** as persistence database for memory.
-- We need a MQTT Client like **Paho** to send and receive mqtt events from a simulate temperature sensor and a MQTT Broke, in this case we will use the free broker offered by hiveMQ.
+- We need a MQTT Client like **Paho** to send and receive mqtt events from a simulate temperature sensor and a MQTT broker, in this case we will use the free broker offered by hiveMQ.
 - Finally we need a reasoning LLM model like **qwen2.5:7b** to classify our machine status for ambiguous cases. we will use **Ollama** as models management.
 
     ```shell
@@ -15,13 +15,13 @@ These are the depedencies for this agent:
     ```
 
 ## Execution
-- **Start Sensor Simulator** to generate mqtt temperature events published in MQTT Hive free MQTT Broker
+- **Start Sensor Simulator** to generate mqtt temperature events published in MQTT HiveMQ free MQTT Broker
 
     ```python
     python simulate_sensor.py
     ```
 
-- **Start Sensor Agent**. to predict the machine status from temperature sensor published in a Hive MQTT Broker. This agent execute these steps using a langgraph workflow:
+- **Start Sensor Agent**. to predict the machine status from temperature sensor published in a HiveMQ MQTT Broker. This agent execute these steps using a langgraph workflow:
 
     - **Sense**: he "sensing" already happened in on_message (that's what triggered this run); this node just normalizes/validates the payload for the graph
     - **Reason**: pulls persisted history for this topic out of SQLite, not memory
