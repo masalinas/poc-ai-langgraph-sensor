@@ -52,10 +52,9 @@ def compute_stats(history: list[dict], current_value: float) -> Stats:
 def rule_based_decision(current_value: float, stats: Stats) -> tuple[str, bool, str]:
     """Returns (decision, is_ambiguous, note).
 
-    decision   - the rule engine's best answer right now: ok | warn | alert
+    decision     - the rule engine's best answer right now: ok | warn | alert
     is_ambiguous - True if this case deserves a second opinion (LLM) before acting
-    note       - short human-readable justification, used whether or not the
-                 LLM gets involved
+    note         - short human-readable justification, used whether or not the LLM gets involved
     """
     # Hard thresholds are never ambiguous -- current value already crossed the line.
     if current_value >= ALERT_THRESHOLD:
