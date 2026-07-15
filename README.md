@@ -1,13 +1,13 @@
 # Description
-PoC Langgraph AI Agent that classifie a machine status using measures from a temperature virtual sensor. The rules to decide the machine status from agent are primary deterministic bases on some temperature features like: value, hysteteris, trend, slope, threshold and if is not possible take a clear decision finally a semantic reasoning followed by a LLM.
+PoC Langgraph AI Agent that classifie a machine status using measures from a temperature virtual sensor. The rules to decide the machine status from agent are primary deterministic bases on some   temperature features like: value, hysteteris, trend, slope, threshold and if is not possible take a clear decision finally a semantic reasoning followed by a LLM.
 
 ## Dependencies
 
 These are the depedencies for this agent:
 
-    - We will use **langgraph** dependencies to implement the Agent AI and **SQLite** as persistence database for memory.
-    - We need a MQTT Client like **Paho** to send and receive mqtt events from a simulate temperature sensor and a MQTT Broke, in this case we will use the free broker offered by hiveMQ.
-    - Finally we need a reasoning LLM model like **qwen2.5:7b** to classify our machine status for ambiguous cases. we will use **Ollama** as models management.
+- We will use **langgraph** dependencies to implement the Agent AI and **SQLite** as persistence database for memory.
+- We need a MQTT Client like **Paho** to send and receive mqtt events from a simulate temperature sensor and a MQTT Broke, in this case we will use the free broker offered by hiveMQ.
+- Finally we need a reasoning LLM model like **qwen2.5:7b** to classify our machine status for ambiguous cases. we will use **Ollama** as models management.
 
     ```shell
     $ pip install langgraph langgraph-checkpoint-sqlite langchain-ollama paho-mqtt --break-system-packages
