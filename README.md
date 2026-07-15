@@ -99,3 +99,8 @@ The engine evaluates rules in a strict top-down order (prioritizing safety):
     ```
 
     **Logic**: If none of the above are met (the temperature is below 85°C, there are no rapid rising trends, and the system has already stabilized after cooling down), the state is safely declared as ok and the LLM does not intervene.
+
+
+## Links
+
+- [Hive MQTT Agent Marketplace](https://app.hivemq.com/act/marketplace)
