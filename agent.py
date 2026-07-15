@@ -242,6 +242,7 @@ def main() -> None:
             print(f"Ignoring non-JSON payload on {msg.topic}: {msg.payload!r}")
             return
 
+        # invoke the agent
         app.invoke({"topic": msg.topic, "reading": reading, "decision": "", "reasoning": "", "action": ""})
 
     client.on_connect = on_connect
