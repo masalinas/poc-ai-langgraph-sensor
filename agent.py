@@ -264,6 +264,12 @@ def main() -> None:
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
     app = build_graph(client)
 
+    # Save the plot directly as a local file without using IPython.
+    with open("images/graph.png", "wb") as f:
+        f.write(app.get_graph(xray=True).draw_mermaid_png())
+
+    print("Graph successfully saved as 'graph.png'")
+
     def on_connect(c, userdata, flags, reason_code, properties):
         print(f"Connected to {BROKER_HOST} (rc={reason_code})")
         c.subscribe(SENSE_TOPIC)
