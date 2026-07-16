@@ -1,5 +1,5 @@
 # Description
-PoC Langgraph AI Agent that classifie a machine status using measures from a temperature virtual sensor. The rules to decide the machine status from agent are primary deterministic bases on some   temperature features like: value, hysteteris, trend, slope, threshold and if is not possible take a clear decision finally a semantic reasoning followed by a LLM.
+PoC Langgraph AI Agent that classify a machine status using the measures from a temperature virtual sensor. The rules to decide the machine status from agent are primary deterministic bases on some characteristics temperature features like: value, hysteteris, trend, slope, threshold and if is not possible take a clear decision finally a semantic reasoning followed by a LLM.
 
 ## Dependencies
 
