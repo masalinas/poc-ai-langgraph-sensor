@@ -14,12 +14,6 @@ These are the depedencies for this agent:
     ```shell
     $ pip install paho-mqtt --break-system-packages
     ```
-
-- Other dependencies:
-    ```shell
-        $ pip install dotenv --break-system-packages
-    ``
-
 - Finally we need a reasoning LLM model like **qwen2.5:7b** to classify our machine status for ambiguous cases. we will use **Ollama** as models management.
     ```shell
     $ ollama pull qwen2.5:7b
