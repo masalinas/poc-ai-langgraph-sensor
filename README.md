@@ -181,6 +181,13 @@ $ mosquitto_pub -h broker.hivemq.com -t veradoc/demo/machine07/approval_response
 
 ```
 
+## Langsmith
+To open langsmith locally execute
+
+```shell
+$ langgraph dev
+```
+
 ## Links
 
 - [Hive MQTT Agent Marketplace](https://app.hivemq.com/act/marketplace)
