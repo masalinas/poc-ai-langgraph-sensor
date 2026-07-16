@@ -188,6 +188,8 @@ To open langsmith locally execute
 $ langgraph dev
 ```
 
+![Langsmith UI](sensor_agent/images/langsmith.png)
+
 ## Links
 
 - [Hive MQTT Agent Marketplace](https://app.hivemq.com/act/marketplace)
