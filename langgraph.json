@@ -1,0 +1,9 @@
+{
+    "dependencies": [
+        "."
+    ],
+    "graphs": {
+        "sensor_agent": "./sensor_agent/agent.py:graph"
+    },
+    "env": "./.env"
+}

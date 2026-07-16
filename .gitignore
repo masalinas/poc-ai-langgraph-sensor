@@ -87,8 +87,5 @@ share/python-wheels/
 MANIFEST
 
 # custom resources
-documents
-media
-/db/veradoc.db
-
-/data/agent_script.py
+.langgraph_api
+.env
